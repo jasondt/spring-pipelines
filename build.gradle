@@ -1,0 +1,43 @@
+buildscript {
+	repositories { jcenter() }
+
+	dependencies {
+		classpath 'com.github.jruby-gradle:jruby-gradle-plugin:1.3.3'
+	}
+}
+
+apply plugin: "com.github.jruby-gradle.base"
+
+import com.github.jrubygradle.JRubyExec
+
+dependencies {
+	jrubyExec "rubygems:asciidoctor:1.5.4"
+}
+
+task generateMainReadme(type: JRubyExec) {
+	script "${projectDir}/tools/coalesce-readme.rb"
+	scriptArgs "-i ${projectDir}/docs/README.adoc", "-o ${projectDir}/README.adoc"
+}
+
+task generateJenkinsReadme(type: JRubyExec) {
+	script "${projectDir}/tools/coalesce-readme.rb"
+	scriptArgs "-i ${projectDir}/docs/JENKINS.adoc", "-o ${projectDir}/jenkins/README.adoc"
+}
+
+task generateConcourseReadme(type: JRubyExec) {
+	script "${projectDir}/tools/coalesce-readme.rb"
+	scriptArgs "-i ${projectDir}/docs/CONCOURSE.adoc", "-o ${projectDir}/concourse/README.adoc"
+}
+
+task generateIndex(type: JRubyExec, dependsOn: ["generateMainReadme", "generateJenkinsReadme", "generateConcourseReadme"]) {
+	script "${projectDir}/tools/generate-index.rb"
+	scriptArgs "${projectDir}/docs/spring-cloud-pipelines.adoc"
+}
+
+task generateReadme(dependsOn: ["generateIndex"]) {
+	description = "Creates documentation for the project"
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '3.5'
+}

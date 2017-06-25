@@ -1,0 +1,61 @@
+= Spring Cloud Pipelines
+
+_Documentation Authors: Marcin Grzejszczak_
+
+Spring, Spring Boot and Spring Cloud are tools that allow developers speed up the
+time of creating new business features. It's common knowledge however that the
+ feature is only valuable if it's in production. That's why companies
+ spend a lot of time and resources on building their own deployment pipelines.
+
+This project tries to solve the following problems:
+
+- Creation of a common deployment pipeline
+- Propagation of good testing & deployment practices
+- Speed up the time required to deploy a feature to production
+
+A common way of running, configuring and deploying applications lowers support costs
+and time needed by new developers to blend in when they change projects.
+
+== The opinionated pipeline
+
+This repo contains an *opinionated pipeline* to deploy a Spring Cloud based microservice.
+We've taken the following opinionated decisions:
+
+- usage of Spring Cloud, Spring Cloud Contract Stub Runner and Spring Cloud Eureka
+- application deployment to Cloud Foundry
+- For Maven:
+    * usage of Maven Wrapper
+    * artifacts deployment by `./mvnw clean deploy`
+    * `stubrunner.ids` property to retrieve list of collaborators for which stubs should be downloaded
+    * running smoke tests on a deployed app via the `smoke` Maven profile
+    * running end to end tests on a deployed app via the `e2e` Maven profile
+- For Gradle (in the `github-analytics` application check the `gradle/pipeline.gradle` file):
+    * usage of Gradlew Wrapper
+    * `deploy` task for artifacts deployment
+    * running smoke tests on a deployed app via the `smoke` task
+    * running end to end tests on a deployed app via the `e2e` task
+    * `groupId` task to retrieve group id
+    * `artifactId` task to retrieve artifact id
+    * `currentVersion` task to retrieve the current version
+    * `stubIds` task to retrieve list of collaborators for which stubs should be downloaded
+
+This is the initial approach that can be easily changed since all the core
+deployment logic is done in a form of Bash scripts.
+
+You can go through the setup of the demo environment for
+
+- <<concourse, Concourse>>
+- <<jenkins, Jenkins using Jenkins Job DSL plugin>>
+
+Each of these setups are available under the folders `jenkins` and
+`concourse` respectively.
+
+include::INTRO.adoc[]
+
+include::CONCOURSE.adoc[]
+
+include::JENKINS.adoc[]
+
+include::DEMO.adoc[]
+
+include::TECH.adoc[]
